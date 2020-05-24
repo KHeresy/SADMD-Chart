@@ -2,21 +2,76 @@
 <html lang="zh-TW">
 <head>
     <meta charset="utf-8">
-    <title>SAO:MD 公告更新紀錄</title>
+    <title>SAO:MD 腳色數量統計</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script>
+        var randomColorGenerator = function () {
+            return '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
+        };
+
         $(document).ready(function () {
-            $.getJSON("https://github.com/ratsounds/saomddc/blob/master/data/data.json").done(function (data) {
-                let liChangelog = $("#changelog");
-                liChangelog.innerText = data;
+            $.getJSON("data.json").done(function (data) {
+                let liName = {};
+                $.each(data.cname, function (key, cname) {
+                    liName[cname.id] = {
+                        label: (cname.name + " / " + cname.name_en),
+                        data: [],
+                        fill: false,
+                        backgroundColor: randomColorGenerator(),
+                    };
+                });
+
+                let liGroup = [];
+                $.each(data.group, function (keyGroup, group) {
+                    liGroup.push(group.long);
+
+                    //TODO: this counting method very stupid
+                    $.each(liName, function (keyName, cname) {
+                        if (cname.data.length > 0)
+                            cname.data.push(cname.data[cname.data.length - 1]);
+                        else
+                            cname.data.push(0);
+
+                        $.each(data.base, function (keyChar, baseChar) {
+                            if (baseChar.cname == keyName && baseChar.group == keyGroup) {
+                                ++cname.data[cname.data.length-1];
+                            }
+                        });
+
+                    });
+                });
+
+                let dataset = [];
+                $.each(liName, function (key, val) {
+                    dataset.push(val);
+                });
+
+                var ctx = document.getElementById('myChart');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: liGroup,
+                        datasets: dataset
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
             });
         });
     </script>
 </head>
 <body>
-    <h3 align="center">SAO:MD 公告更新紀錄</h3>
-    <div id="changelog"></div>
+    <h3 align="center">SAO:MD 腳色數量統計</h3>
+    <canvas id="myChart" width="600" height="400"></canvas>
 </body>
 </html>
