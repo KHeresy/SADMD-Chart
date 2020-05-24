@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script>
         $(document).ready(function () {
-            $.getJSON("changelog.json").done(function (data) {
+            $.getJSON("https://github.com/ratsounds/saomddc/blob/master/data/data.json").done(function (data) {
                 let liChangelog = $("#changelog");
                 liChangelog.innerText = data;
             });
