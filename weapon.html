@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="utf-8">
-    <title>SAO:MD 腳色數量統計</title>
+    <title>SAO:MD 武器數量統計</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
@@ -16,9 +16,9 @@
         $(document).ready(function () {
             $.getJSON("data.json").done(function (data) {
                 dbDatabase = data;
-                let liName = {};
-                $.each(data.cname, function (key, cname) {
-                    liName[cname.id] = {
+                let liWeapon = {};
+                $.each(data.type, function (key, cname) {
+                    liWeapon[cname.id] = {
                         label: (cname.name + " / " + cname.name_en),
                         data: [],
                         fill: false,
@@ -31,14 +31,14 @@
                     liGroup.push(group.long);
 
                     //TODO: this counting method very stupid
-                    $.each(liName, function (keyName, cname) {
+                    $.each(liWeapon, function (keyName, cname) {
                         if (cname.data.length > 0)
                             cname.data.push(cname.data[cname.data.length - 1]);
                         else
                             cname.data.push(0);
 
                         $.each(data.base, function (keyChar, baseChar) {
-                            if (baseChar.cname == keyName && baseChar.group == keyGroup) {
+                            if (baseChar.type == keyName && baseChar.group == keyGroup) {
                                 ++cname.data[cname.data.length-1];
                             }
                         });
@@ -47,7 +47,7 @@
                 });
 
                 let dataset = [];
-                $.each(liName, function (key, val) {
+                $.each(liWeapon, function (key, val) {
                     let vCount = val.data[val.data.length - 1];
                     if (vCount > 0) {
                         dataset.push(val);
