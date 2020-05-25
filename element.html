@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="utf-8">
-    <title>SAO:MD 武器數量統計</title>
+    <title>SAO:MD 屬性數量統計</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
@@ -17,7 +17,7 @@
             $.getJSON("data.json").done(function (data) {
                 dbDatabase = data;
                 let liWeapon = {};
-                $.each(data.type, function (key, cname) {
+                $.each(data.element, function (key, cname) {
                     liWeapon[cname.id] = {
                         label: (cname.name + " / " + cname.name_en),
                         data: [],
@@ -38,7 +38,7 @@
                             cname.data.push(0);
 
                         $.each(data.base, function (keyChar, baseChar) {
-                            if (baseChar.type == keyName && baseChar.group == keyGroup) {
+                            if (baseChar.element == keyName && baseChar.group == keyGroup) {
                                 ++cname.data[cname.data.length-1];
                             }
                         });
@@ -78,7 +78,7 @@
     </script>
 </head>
 <body>
-    <h3 align="center">SAO:MD 武器數量統計</h3>
+    <h3 align="center">SAO:MD 屬性數量統計</h3>
     <canvas id="myChart" width="800" height="600"></canvas>
     <footer>
       <p align=center><a href=https://ratsounds.github.io/saomddc/>Data sorce: SAO:MD:DC<a/></p>
